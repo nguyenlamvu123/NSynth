@@ -1,0 +1,13 @@
+numpy
+pandas
+matplotlib
+librosa
+#glob
+scipy
+#collections
+scipy
+keras
+#pickle
+#itertools
+scikit-learn
+gradio
