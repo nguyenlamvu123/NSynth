@@ -1,7 +1,20 @@
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import numpy as np
 import pandas as pd
-import librosa, pickle
+import librosa
 from config import *
+
+
+def Evaluate_model(y_true, y_pred):
+    # site: https://machinelearningcoban.com/2017/08/31/evaluation/
+    labels = np.array(y_true)
+    print('test accuracy = ', accuracy_score(labels, y_pred), ' %')
+
+    print(classification_report(labels, y_pred))
+
+    cnf_matrix = confusion_matrix(labels, y_pred)
+    print('Confusion matrix:\n', cnf_matrix)
+    print('\nAccuracy:', np.diagonal(cnf_matrix).sum() / cnf_matrix.sum())
 
 
 def feature_extract(file):
@@ -52,13 +65,19 @@ def instrument_code(filename):
         return None
 
 
-def main(PATH=None, clf=None, jso: dict or None = None) -> dict:
+def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) -> dict or None:
+    if PATH is None:  # run test
+        testflag = True
+        PATH = librosa.util.find_files(Test_path.data_path)
+    if debug:
+        PATH = PATH[:3]
     dict_test: dict = {}
+    labels = []
     for p in PATH:
         file = p.split(os.sep)[-1]
+        labels.append(p.split(os.sep)[-1].split('_')[0])  # contains filenames (when method is calles from gradio) or labels (when running test)
         features = feature_extract(p)
         dict_test[file] = features
-    labels = dict_test.keys()   # contains filenames
     features_test = pd.DataFrame.from_dict(
         dict_test,
         orient='index',
@@ -90,17 +109,24 @@ def main(PATH=None, clf=None, jso: dict or None = None) -> dict:
         axis=1,
         join='inner'
     )
+    assert clf is not None
     test_Y_hat = clf.predict(data)
+
     result = list(test_Y_hat)
-    assert jso is not None
     assert len(result) == len(PATH) == len(labels)
-    for i, key in enumerate(labels):
-        res: int = int(result[i])
-        ypre = class_names[res]
-        if key not in jso: jso[key] = list()
-        if ypre not in jso[key]: jso[key].append(ypre)
+    if testflag:  # run test
+        Evaluate_model(labels, [class_names[int(result[i])] for i in range(len(labels))])
+    else:  # method is calles from gradio
+        for i, key in enumerate(labels):
+            res: int = int(result[i])
+            ypre = class_names[res]
+            if key not in jso: jso[key] = list()
+            if ypre not in jso[key]: jso[key].append(ypre)
     return jso
 
 
 if __name__ == '__main__':
-    main()
+    PATH = librosa.util.find_files('/home/zaibachkhoa/Documents/Music-Genre-Classification-From-Audio-Files/Music_Instrument_Classification/dataset/valid/')
+    jso = dict()
+    for clf in model_listobj:
+        main(PATH=PATH, testflag=True, clf=clf, jso=jso)

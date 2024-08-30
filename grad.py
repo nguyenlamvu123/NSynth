@@ -1,6 +1,6 @@
 import gradio as st
-import argparse, json, pickle
-from test import main, mod_name
+import argparse, json
+from test import main, model_listobj
 
 
 def showdata_col1():
@@ -26,12 +26,6 @@ def showdata_col3():
 outmp4list = list()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    model_listobj: list = list()  # list chứa các model đã được load
-
-    for mt in mod_name:  # tuple danh sách tên các model
-        with open(f'{mt}.pickle', 'rb') as f:
-            model_obj = pickle.load(f)
-        model_listobj.append(model_obj)
 
     parser.add_argument(
         '--listen',
