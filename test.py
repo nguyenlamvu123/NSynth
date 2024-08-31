@@ -110,18 +110,23 @@ def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) 
         join='inner'
     )
     assert clf is not None
-    test_Y_hat = clf.predict(data)
+    test_Y_hat = clf.predict_proba(data)
+    best_4 = np.argsort(test_Y_hat, axis=1)[:,-mult_res:]
 
-    result = list(test_Y_hat)
-    assert len(result) == len(PATH) == len(labels)
+    result_s = list(best_4)
+    assert len(result_s) == len(PATH) == len(labels)
+
+    confirm_each_result_is_sorted(test_Y_hat, result_s)
+
     if testflag:  # run test
-        Evaluate_model(labels, [class_names[int(result[i])] for i in range(len(labels))])
+        Evaluate_model(labels, [class_names[int(result_s[i][0])] for i in range(len(labels))])
     else:  # method is calles from gradio
         for i, key in enumerate(labels):
-            res: int = int(result[i])
-            ypre = class_names[res]
             if key not in jso: jso[key] = list()
-            if ypre not in jso[key]: jso[key].append(ypre)
+            result = result_s[i]
+            for top4 in result:
+                ypre = class_names[int(top4)]
+                if ypre not in jso[key]: jso[key].append(ypre)
     return jso
 
 
