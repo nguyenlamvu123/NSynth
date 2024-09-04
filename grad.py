@@ -1,6 +1,6 @@
 import gradio as st
 import argparse, json
-from test import main, model_listobj
+from test import vocal_or_not, main, model_listobj
 
 
 def showdata_col1():
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     server_name = args.listen
 
     def foo(dir):
-        jso: dict = dict()
+        jso, dir = vocal_or_not(dir)
         for clf in model_listobj:
             jso = main(dir, clf=clf, jso=jso)
         return json.dumps(jso, sort_keys=True, indent=4, ensure_ascii=False)

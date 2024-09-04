@@ -2,6 +2,9 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 import numpy as np
 import pandas as pd
 import librosa
+import demucs.separate
+
+from AudioSeg import main as v_o_n
 from config import *
 
 
@@ -15,6 +18,28 @@ def Evaluate_model(y_true, y_pred):
     cnf_matrix = confusion_matrix(labels, y_pred)
     print('Confusion matrix:\n', cnf_matrix)
     print('\nAccuracy:', np.diagonal(cnf_matrix).sum() / cnf_matrix.sum())
+
+
+def vocal_or_not(dir):
+    """
+    tách giai điệu và ca từ bằng demucs (độ chính xác khá cao, nhưng không phải tuyệt đối
+    sau đó dùng vocals.mp3 (wav) để xác định nhạc có lời hay hòa tấu
+    dùng no_vocals.mp3 (wav) để làm đầu vào cho hàm main chính (import từ test.py, trong grad.py)
+    """
+    jso: dict = dict()
+    dir_: list = list()
+    for song in dir:
+        key = song.split(os.sep)[-1]
+        dmucli: list = dmu_cli(song)
+        ext = ".mp3" if "--mp3" in dmucli else ".wav"
+        demucs.separate.main(dmucli)
+        input_dir = os.path.join(
+            os.getcwd(), "separated", "mdx_extra", os.path.splitext(song.split(os.sep)[-1])[0]
+        )  # no_vocals.mp3, vocals.mp3
+        jso[key] = [v_o_n(os.path.join(input_dir, f"vocals{ext}"))]
+        dir_.append(os.path.join(input_dir, f"no_vocals{ext}"))
+        if jso[key][0] == '': jso[key] = []
+    return jso, dir_
 
 
 def feature_extract(file):
@@ -65,17 +90,21 @@ def instrument_code(filename):
         return None
 
 
-def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) -> dict or None:
+def main(
+        PATH=None, testflag: bool = False, clf=None, jso: dict or None = None,
+) -> dict or None:
     if PATH is None:  # run test
         testflag = True
         PATH = librosa.util.find_files(Test_path.data_path)
     if debug:
         PATH = PATH[:3]
     dict_test: dict = {}
-    labels = []
+    labels = [] if testflag else jso.keys()  # contains filenames (when method is calles from gradio) or labels (when running test)
     for p in PATH:
-        file = p.split(os.sep)[-1]
-        labels.append(p.split(os.sep)[-1].split('_')[0])  # contains filenames (when method is calles from gradio) or labels (when running test)
+        pathlist = p.split(os.sep)
+        file = pathlist[-1] if testflag else pathlist[-2]
+        if testflag:
+            labels.append(file.split('_')[0])
         features = feature_extract(p)
         dict_test[file] = features
     features_test = pd.DataFrame.from_dict(
@@ -122,7 +151,6 @@ def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) 
         Evaluate_model(labels, [class_names[int(result_s[i][0])] for i in range(len(labels))])
     else:  # method is calles from gradio
         for i, key in enumerate(labels):
-            if key not in jso: jso[key] = list()
             result = result_s[i]
             for top4 in result:
                 ypre = class_names[int(top4)]

@@ -1,8 +1,10 @@
+#numpy==1.24.1
 numpy
 pandas
 matplotlib
 librosa
 #glob
+#scipy==1.10.0
 scipy
 #collections
 scipy
@@ -11,3 +13,5 @@ keras
 #itertools
 scikit-learn
 gradio
+demucs
+tqdm==4.64.1
