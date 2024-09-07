@@ -1,6 +1,7 @@
 import os, pickle
 
 
+os.environ['TORCH_HOME'] = './pret/'
 debug: bool = False
 mod_name: tuple = (
     'random_search_RF',
@@ -17,6 +18,17 @@ for mt in mod_name:  # tuple danh sách tên các model
     with open(f'{mt}.pickle', 'rb') as f:
         model_obj = pickle.load(f)
     model_listobj.append(model_obj)
+
+
+def dmu_cli(song) -> list:
+    return [
+            # "--mp3",
+            "--two-stems",
+            "vocals",
+            "-n",
+            "mdx_extra",
+            song
+        ]
 
 
 def confirm_each_result_is_sorted(test_Y_hat, result_s):
