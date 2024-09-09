@@ -1,0 +1,3 @@
+https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-5stems-model
+https://stackoverflow.com/questions/78641150/a-module-that-was-compiled-using-numpy-1-x-cannot-be-run-in-numpy-2-0-0
+https://github.com/deezer/spleeter/wiki/4.-API-Reference#separator
