@@ -47,6 +47,7 @@ if __name__ == '__main__':
         jso: dict = dict()
         for clf in model_listobj:
             jso = main(dir, clf=clf, jso=jso)
+            assert jso is not None
         return json.dumps(jso, sort_keys=True, indent=4, ensure_ascii=False)
 
     with st.Blocks() as demo:

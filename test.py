@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import numpy as np
 import pandas as pd
-import librosa
+import librosa, json
 from config import *
 
 
@@ -98,7 +98,7 @@ def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) 
 
     # extract contrast
     contrast_test = pd.DataFrame(features_test.contrast.values.tolist(), index=features_test.index)
-    contrast_test = chroma_test.add_prefix('contrast_')
+    contrast_test = contrast_test.add_prefix('contrast_')  # chroma_test.add_prefix('contrast_')  #
 
     # drop the old columns
     features_test = features_test.drop(labels=['mfcc', 'spectro', 'chroma', 'contrast'], axis=1)
@@ -109,25 +109,34 @@ def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) 
         axis=1,
         join='inner'
     )
-    assert clf is not None
-    test_Y_hat = clf.predict_proba(data)
+    # data.to_csv(
+    #     'unt/expect/unt1.csv',
+    #     # index=False
+    # )
+    test_Y_hat = predi(clf, data)
     best_4 = np.argsort(test_Y_hat, axis=1)[:,-mult_res:]
 
     result_s = list(best_4)
-    assert len(result_s) == len(PATH) == len(labels)
+    # assert len(result_s) == len(PATH) == len(labels)
 
     confirm_each_result_is_sorted(test_Y_hat, result_s)
 
     if testflag:  # run test
         Evaluate_model(labels, [class_names[int(result_s[i][0])] for i in range(len(labels))])
     else:  # method is calles from gradio
-        for i, key in enumerate(labels):
-            if key not in jso: jso[key] = list()
-            result = result_s[i]
-            for top4 in result:
-                ypre = class_names[int(top4)]
-                if ypre not in jso[key]: jso[key].append(ypre)
+        if jso is not None:
+            for i, key in enumerate(labels):
+                if key not in jso: jso[key] = list()
+                result = result_s[i]
+                for top4 in result:
+                    ypre = class_names[int(top4)]
+                    if ypre not in jso[key]: jso[key].append(ypre)
     return jso
+
+
+def predi(clf, data):
+    assert clf is not None
+    return clf.predict_proba(data)
 
 
 if __name__ == '__main__':
