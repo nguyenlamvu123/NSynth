@@ -1,0 +1,6 @@
+[core]
+    remote = origin
+['remote "origin"']
+    url = gdrive://1gb28sCY6Rs4XrtFgk16hx76wPfnK_ddW
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = /media/zaibachkhoa/New Volume/__h2jsc_NESTECH/NSynth/ferrous-layout-477007-d8-0792f80cbd03.json

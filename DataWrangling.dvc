@@ -1,0 +1,6 @@
+outs:
+- md5: f31b3648e687412272292b3272d1c065.dir
+  size: 49185415
+  nfiles: 6
+  hash: md5
+  path: DataWrangling
