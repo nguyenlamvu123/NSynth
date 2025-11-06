@@ -14,7 +14,7 @@ mult_res: int = 4
 model_listobj: list = list()  # list chứa các model đã được load
 
 for mt in mod_name:  # tuple danh sách tên các model
-    with open(f'{mt}.pickle', 'rb') as f:
+    with open(f'SavedModels/{mt}.pickle', 'rb') as f:
         model_obj = pickle.load(f)
     model_listobj.append(model_obj)
 

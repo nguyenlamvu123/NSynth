@@ -3,7 +3,6 @@ pandas
 matplotlib
 librosa
 #glob
-scipy
 #collections
 scipy
 keras
@@ -11,3 +10,4 @@ keras
 #itertools
 scikit-learn
 gradio
+dvc[gdrive]
