@@ -1,0 +1,5 @@
+Để dùng Google Drive với DVC thông qua Service Account, bạn bắt buộc phải tạo một “Ổ đĩa dùng chung” (Shared Drive)
+Tài khoản Google cá nhân KHÔNG được phép tạo Shared Drive.
+-> Dùng rclone + Google Drive cá nhân (không cần Shared Drive)
+	sudo apt install rclone
+
