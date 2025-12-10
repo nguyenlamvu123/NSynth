@@ -1,0 +1,1 @@
+docker run -it   -p 8501:8501   -v /media/zaibachkhoa/code/capstone_GenAI/NSynth_/SavedModels:/app/SavedModels   nsynth-gradio-app   /bin/bash
