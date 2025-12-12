@@ -1,5 +1,14 @@
-import os, pickle
+import os, pickle, logging
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("app.log", encoding="utf-8"),  # ghi log vào file
+        logging.StreamHandler()                           # in log ra console
+    ]
+)
 
 debug: bool = False
 mod_name: tuple = (
