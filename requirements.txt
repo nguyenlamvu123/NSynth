@@ -11,3 +11,4 @@ keras
 scikit-learn
 gradio
 dvc[gdrive]
+cookiecutter
