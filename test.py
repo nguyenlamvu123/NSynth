@@ -13,7 +13,7 @@ def Evaluate_model(y_true, y_pred):
     print(classification_report(labels, y_pred))
 
     cnf_matrix = confusion_matrix(labels, y_pred)
-    print('Confusion matrix:\n', cnf_matrix)
+    logging.info(f'Confusion matrix:\n {cnf_matrix}')
     print('\nAccuracy:', np.diagonal(cnf_matrix).sum() / cnf_matrix.sum())
 
 
@@ -51,6 +51,7 @@ def feature_extract(file):
     contrast = librosa.feature.spectral_contrast(y=y, sr=sr)
     contrast = np.mean(contrast, axis=1)
 
+    logging.info('trích xuất đặc trưng hoàn thành!')
     return [harmonic, mfcc, spectrogram, chroma, contrast]
 
 
@@ -125,12 +126,15 @@ def main(PATH=None, testflag: bool = False, clf=None, jso: dict or None = None) 
         Evaluate_model(labels, [class_names[int(result_s[i][0])] for i in range(len(labels))])
     else:  # method is calles from gradio
         if jso is not None:
+            logging.info('dự đoán hoàn thành!')
             for i, key in enumerate(labels):
                 if key not in jso: jso[key] = list()
                 result = result_s[i]
                 for top4 in result:
                     ypre = class_names[int(top4)]
                     if ypre not in jso[key]: jso[key].append(ypre)
+        else:
+            logging.warning('dự đoán trục trặc!')
     return jso
 
 

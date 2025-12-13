@@ -1,9 +1,9 @@
 import unittest, json
 from unittest.mock import patch
-from test import feature_extract, model_listobj  # , predi
+from test import feature_extract, model_listobj, logging  # , predi
 import test
 import numpy as np
-import pandas as pd 
+import pandas as pd
 
 
 class UNTest(unittest.TestCase):
@@ -16,6 +16,7 @@ class UNTest(unittest.TestCase):
             self.expejso = json.load(f)
         self.expecsv = pd.read_csv(self.exp_csv , index_col=0)
         # self.expecsv = self.expecsv.astype({col: np.float32 for col in self.expecsv.select_dtypes(include='float64').columns})
+        logging.info('run unittest!')
 
     def test_feature_extract(self):
         fea = feature_extract(self.path)
