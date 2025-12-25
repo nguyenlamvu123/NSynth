@@ -1,0 +1,23 @@
+site_name: NSynth Capstone
+site_author: Nhóm 5 - HUST
+nav:
+  - Home: index.md
+  - Repo gốc: repo.md
+  - MLOps: mlops.md
+  - Docker: docker.md
+  - DVC: dvc.md
+  - Logging: logging.md
+  - Unittest: unittest.md
+  - Deploy: api.md
+  - Writing document : doc_s.md
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+
