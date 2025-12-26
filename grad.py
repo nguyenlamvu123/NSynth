@@ -1,6 +1,15 @@
 import gradio as st
 import argparse, json
 from test import main, model_listobj
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+defaulthost = os.getenv("defaulthost")
+defaultport = os.getenv("defaultport")
+help = os.getenv("help")
+help_ = os.getenv("help_")
 
 
 def showdata_col1():
@@ -30,14 +39,14 @@ if __name__ == '__main__':
     parser.add_argument(
         '--listen',
         type=str,
-        default='0.0.0.0',
-        help='IP to listen on for connections to Gradio',
+        default=defaulthost,
+        help=help,
     )
     parser.add_argument(
         '--server_port',
         type=int,
-        default='8501',
-        help='Port to run the server listener on',
+        default=defaultport,
+        help=help_,
     )
     args = parser.parse_args()
     server_port = args.server_port
@@ -52,7 +61,7 @@ if __name__ == '__main__':
 
     with st.Blocks() as demo:
         input = st.File(file_count="directory")
-        files = st.Textbox()
+        files = st.Textbox(lines=5, max_lines=50)
         show = st.Button(value="classification")
         show.click(foo, input, files)
 
